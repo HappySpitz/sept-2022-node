@@ -41,7 +41,11 @@ const arrFile = ['file1', 'file2', 'file3', 'file4', 'file5'];
 // for (const name of arrFolder) {
 //     fs.readdir(path.join('main_folder', name),(err, data) => {
 //         if (err) throw new Error(err.message)
-//         console.log(data)
+//         if (name.isFile) {
+//             console.log(data);
+//         } else {
+//             console.log(name)
+//         }
 //     })
 // }
 
