@@ -7,6 +7,5 @@ module.export = {
         "no-unused-vars": ["error", { argsIgnorePattern: "req|res|next" }],
         "simple-import-sort/imports": "error",
         "simple-import-sort/exports": "error",
-
     }
 };
