@@ -1,10 +1,12 @@
 import {NextFunction, Request, Response} from "express";
+import {isObjectIdOrHexString} from "mongoose";
 
 import {User} from "../dataBase/User.model";
 import {ApiError} from "../errors/api.error";
+import {UserValidator} from "../validators";
 
 class UserMiddleware {
-    public async getByIdAndThrow(req:Request, res:Response, next:NextFunction): Promise<void> {
+    public async getByIdOrThrow(req:Request, res:Response, next:NextFunction): Promise<void> {
         try{
             const { userId } = req.params;
 
@@ -20,75 +22,41 @@ class UserMiddleware {
         }
     }
 
-    public async createVerifyAndThrow(req:Request, res:Response, next:NextFunction): Promise<void> {
+    public async isUserValid(req:Request, res:Response, next:NextFunction): Promise<void> {
         try {
-            const {name, email, password, gender} = req.body;
-
-            if (!name || name.length < 2) {
-                throw new ApiError("Wrong name!", 400);
+            if (!isObjectIdOrHexString(req.params.userId)) {
+                throw new ApiError("ID not valid", 400)
             }
-
-            if (!email || email.length < 6 && email.length > 30) {
-                throw new ApiError("Wrong email!", 400);
-            }
-
-            if (!password || password.length < 8) {
-                throw new ApiError("Wrong password!", 400);
-            }
-
-            if (!gender || (gender !== 'male' && gender !== 'female' && gender !== 'mixed')) {
-                throw new ApiError("Wrong gender!", 400);
-            }
-
             next();
         } catch (e) {
             next(e)
         }
     }
 
-    public async updateByIdVerifyAndThrow(req:Request, res:Response, next:NextFunction): Promise<void> {
+    public async isUserValidCreate(req:Request, res:Response, next:NextFunction): Promise<void> {
         try {
-            const {name, email, password, gender} = req.body;
-            const { userId } = req.params;
+            const {error, value} = UserValidator.createUser.validate(req.body)
 
-            const user = await User.findById(userId);
-
-            if (!user) {
-                throw new ApiError("User not found!", 422);
+            if (error) {
+                throw new ApiError(error.message, 400)
             }
 
-            if (!name || name.length < 2) {
-                throw new ApiError("Wrong name!", 400);
-            }
-
-            if (!email || email.length < 6 && email.length > 30) {
-                throw new ApiError("Wrong email!", 400);
-            }
-
-            if (!password || password.length < 8) {
-                throw new ApiError("Wrong password!", 400);
-            }
-
-            if (!gender || (gender !== 'male' && gender !== 'female' && gender !== 'mixed')) {
-                throw new ApiError("Wrong gender!", 400);
-            }
-
+            req.body = value
             next();
         } catch (e) {
             next(e)
         }
     }
 
-    public async deleteByIdAndThrow(req:Request, res:Response, next:NextFunction): Promise<void> {
+    public async isUserValidUpdate(req:Request, res:Response, next:NextFunction): Promise<void> {
         try {
-            const { userId } = req.params;
+            const {error, value} = UserValidator.updateUser.validate(req.body)
 
-            const user = await User.findById(userId);
-
-            if (!user) {
-                throw new ApiError("User not found!", 422);
+            if (error) {
+                throw new ApiError(error.message, 400)
             }
 
+            req.body = value
             next();
         } catch (e) {
             next(e)
