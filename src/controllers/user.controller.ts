@@ -18,9 +18,7 @@ class UserController {
 
     public async getById(req: Request, res: Response, next: NextFunction): Promise<Response<IUser>> {
         try {
-            const {userId} = req.params;
-            const user = await userService.getById(userId)
-
+            const user = res.locals;
             return res.json(user);
         } catch (e) {
             next(e)

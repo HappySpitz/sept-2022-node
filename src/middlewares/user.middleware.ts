@@ -15,7 +15,7 @@ class UserMiddleware {
             if (!user) {
                 throw new ApiError("User not found!", 404);
             }
-
+            res.locals.user = user;
             next();
         } catch (e) {
             next(e)
