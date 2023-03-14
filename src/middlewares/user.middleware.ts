@@ -3,8 +3,8 @@ import { isObjectIdOrHexString } from "mongoose";
 
 import { User } from "../dataBase";
 import { ApiError } from "../errors";
+import { IUser } from "../types";
 import { UserValidator } from "../validators";
-import {IUser} from "../types";
 
 class UserMiddleware {
   public async getByIdOrThrow(
