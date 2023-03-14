@@ -1,6 +1,6 @@
 import { Token, User } from "../dataBase";
 import { ApiError } from "../errors";
-import { ICredentials, ITokenPair, IUser } from "../types";
+import { ICredentials, ITokenPair, ITokenPayload, IUser } from "../types";
 import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 
@@ -31,13 +31,34 @@ class AuthService {
 
       const tokenPair = tokenService.generateTokenPair({
         name: user.name,
-        id: user._id,
+        _id: user._id,
       });
 
       await Token.create({
         _user_id: user._id,
         ...tokenPair,
       });
+
+      return tokenPair;
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async refresh(
+    tokenInfo: ITokenPair,
+    jwtPayload: ITokenPayload
+  ): Promise<ITokenPair> {
+    try {
+      const tokenPair = tokenService.generateTokenPair({
+        _id: jwtPayload._id,
+        name: jwtPayload.name,
+      });
+
+      await Promise.all([
+        Token.create({ _user_id: jwtPayload._id, ...tokenPair }),
+        Token.deleteOne({ refreshToken: tokenInfo.refreshToken }),
+      ]);
 
       return tokenPair;
     } catch (e) {
