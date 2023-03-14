@@ -1,2 +1,2 @@
-export * from './regex.constans';
-export * from './token.constants';
+export * from "./regex.constans";
+export * from "./token.constants";

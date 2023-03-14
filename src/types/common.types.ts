@@ -1,19 +1,19 @@
 import { Request } from "express";
 
 export interface IError extends Error {
-    status: number;
+  status: number;
 }
 
 export interface IMessage {
-    message: string;
+  message: string;
 }
 
 export interface ICommentResponse<T> extends IMessage {
-    data: T;
+  data: T;
 }
 
 interface IIndex {
-    [key: string]: any;
+  [key: string]: any;
 }
 
-export interface IRequest extends Request, IIndex{}
+export interface IRequest extends Request, IIndex {}
