@@ -18,8 +18,10 @@ class UserMiddleware {
       const user = await User.findById(userId);
 
       if (!user) {
-        throw new ApiError("User not found!", 404);
+        throw new ApiError("User not found!", 422);
       }
+
+      res.locals.user = user;
 
       next();
     } catch (e) {
