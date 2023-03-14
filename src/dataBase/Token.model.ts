@@ -1,4 +1,5 @@
 import {model, Schema, Types} from "mongoose";
+
 import {User} from "./User.model";
 
 const tokensSchema = new Schema({

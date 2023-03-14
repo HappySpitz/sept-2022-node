@@ -1,7 +1,7 @@
 import * as jwt from "jsonwebtoken";
 
 import {ITokenPair, ITokenPayload} from "../types";
-import {tokenConstants} from "../constants/token.constants";
+import {tokenConstants} from "../constants";
 
 class TokenService {
     public generateTokenPair(payload: ITokenPayload): ITokenPair {

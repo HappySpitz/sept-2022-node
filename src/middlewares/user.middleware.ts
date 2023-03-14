@@ -1,10 +1,10 @@
 import {NextFunction, Request, Response} from "express";
 import {isObjectIdOrHexString} from "mongoose";
 
-import {User} from "../dataBase/User.model";
-import {ApiError} from "../errors/api.error";
+import {User} from "../dataBase";
+import {ApiError} from "../errors";
 import {UserValidator} from "../validators";
-import {IRequest} from "../types/common.types";
+import {IRequest} from "../types";
 
 class UserMiddleware {
     public async getByIdOrThrow(req:Request, res:Response, next:NextFunction): Promise<void> {

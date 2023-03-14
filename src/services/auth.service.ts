@@ -1,9 +1,8 @@
-import {ApiError} from "../errors/api.error";
+import {ApiError} from "../errors";
 import {ICredentials, ITokenPair, IUser} from "../types";
 import {passwordService} from "./password.service";
-import {User} from "../dataBase/User.model";
+import {User, Token} from "../dataBase";
 import {tokenService} from "./token.service";
-import {Token} from "../dataBase/Token.model";
 
 class AuthService {
     public async register(body: IUser): Promise<void> {
