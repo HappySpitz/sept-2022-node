@@ -1,9 +1,8 @@
 import {NextFunction, Request, Response} from "express";
 
 import {User} from "../dataBase/User.model";
-import {IUser} from "../types/user.types";
+import {IUser, ICommentResponse, IMessage} from "../types";
 import {userService} from "../services/user.service";
-import {ICommentResponse, IMessage} from "../types/common.types";
 
 class UserController {
     public async getAll(req: Request, res: Response, next: NextFunction): Promise<Response<IUser[]>> {
