@@ -20,6 +20,13 @@ router.post(
 );
 
 router.post(
+  "/password/change",
+  userMiddleware.isValidChangePassword,
+  authMiddleware.checkedAccessToken,
+  authController.changePassword
+);
+
+router.post(
   "/refresh",
   authMiddleware.checkedRefreshToken,
   authController.refresh
