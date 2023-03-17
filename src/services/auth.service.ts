@@ -1,9 +1,10 @@
-import { EEmailActions } from "../constants";
 import { Token, User } from "../dataBase";
+import { EEmailActions, ESmsActionEnum } from "../enums";
 import { ApiError } from "../errors";
 import { ICredentials, ITokenPair, ITokenPayload, IUser } from "../types";
 import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
+import { smsService } from "./sms.service";
 import { tokenService } from "./token.service";
 
 class AuthService {
@@ -13,10 +14,13 @@ class AuthService {
       const hashedPassword = await passwordService.hash(password);
       await User.create({ ...body, password: hashedPassword });
 
-      await emailService.sendMail(
-        "tatarkristina4@gmail.com",
-        EEmailActions.WELCOME
-      );
+      await Promise.all([
+        smsService.sendSms("+380501355914", ESmsActionEnum.WELCOME),
+        emailService.sendMail(
+          "tatarkristina4@gmail.com",
+          EEmailActions.WELCOME
+        ),
+      ]);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
