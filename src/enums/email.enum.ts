@@ -1,4 +1,4 @@
-export const enum EEmailActions {
+export enum EEmailActions {
   WELCOME,
   FORGOT_PASSWORD,
 }

@@ -10,6 +10,6 @@ export const allTemplates: {
   [EEmailActions.FORGOT_PASSWORD]: {
     subject:
       "We control your password, just follow all steps and everything will be good",
-    templateName: "login",
+    templateName: "forgotPassword",
   },
 };

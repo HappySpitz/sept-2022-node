@@ -1,5 +1,5 @@
-import { Token, User } from "../dataBase";
-import { EEmailActions, ESmsActionEnum } from "../enums";
+import { Action, Token, User } from "../dataBase";
+import { EActionTokenType, EEmailActions, ESmsActionEnum } from "../enums";
 import { ApiError } from "../errors";
 import { ICredentials, ITokenPair, ITokenPayload, IUser } from "../types";
 import { emailService } from "./email.service";
@@ -82,15 +82,58 @@ class AuthService {
     oldPassword: string,
     newPassword: string
   ): Promise<void> {
-    const user = await User.findById(userId);
-    const isMatched = await passwordService.compare(oldPassword, user.password);
+    try {
+      const user = await User.findById(userId);
 
-    if (!isMatched) {
-      throw new ApiError("Wrong old password", 401);
+      const isMatched = await passwordService.compare(
+        oldPassword,
+        user.password
+      );
+
+      if (!isMatched) {
+        throw new ApiError("Wrong old password", 401);
+      }
+
+      const hashedNewPassword = await passwordService.hash(newPassword);
+      await User.updateOne({ _id: user._id }, { password: hashedNewPassword });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
     }
+  }
 
-    const hashedNewPassword = await passwordService.hash(newPassword);
-    await User.updateOne({ _id: user._id }, { password: hashedNewPassword });
+  public async forgotPassword(user: IUser): Promise<void> {
+    try {
+      const actionToken = tokenService.generateActionToken(
+        { _id: user._id },
+        EActionTokenType.forgot
+      );
+
+      await Action.create({
+        actionToken,
+        tokenType: EActionTokenType.forgot,
+        _user_id: user._id,
+      });
+
+      await emailService.sendMail(
+        "tatarkristina4@gmail.com",
+        EEmailActions.FORGOT_PASSWORD,
+        {
+          token: actionToken,
+        }
+      );
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async setForgotPassword(password: string, id: string): Promise<void> {
+    try {
+      const hashedPassword = await passwordService.hash(password);
+
+      await User.updateOne({ _id: id }, { password: hashedPassword });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
   }
 }
 
