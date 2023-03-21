@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 
-import {Action, Token} from "../dataBase";
-import {EActionTokenType, ETokenType} from "../enums";
+import { Action, Token } from "../dataBase";
+import { EActionTokenType, ETokenType } from "../enums";
 import { ApiError } from "../errors";
 import { tokenService } from "../services";
 
@@ -66,9 +66,9 @@ class AuthMiddleware {
 
   public checkActionToken(type: EActionTokenType) {
     return async (
-        req: Request,
-        res: Response,
-        next: NextFunction
+      req: Request,
+      res: Response,
+      next: NextFunction
     ): Promise<void> => {
       try {
         const actionToken = req.params.token;
