@@ -97,6 +97,21 @@ class AuthController {
       next(e);
     }
   }
+
+  public async isActivatedAccount(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> {
+    try {
+      const { tokenInfo } = req.res.locals;
+      await authService.isActivatedAccount(tokenInfo._user_id);
+
+      res.sendStatus(200);
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export const authController = new AuthController();

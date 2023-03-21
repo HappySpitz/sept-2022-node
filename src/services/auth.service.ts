@@ -12,13 +12,25 @@ class AuthService {
     try {
       const { password } = body;
       const hashedPassword = await passwordService.hash(password);
-      await User.create({ ...body, password: hashedPassword });
+      const user = await User.create({ ...body, password: hashedPassword });
+
+      const actionToken = await tokenService.generateActionToken(
+        { _id: user._id },
+        EActionTokenType.activate
+      );
+
+      await Action.create({
+        actionToken,
+        tokenType: EActionTokenType.activate,
+        _user_id: user._id,
+      });
 
       await Promise.all([
         smsService.sendSms("+380501355914", ESmsActionEnum.WELCOME),
         emailService.sendMail(
           "tatarkristina4@gmail.com",
-          EEmailActions.WELCOME
+          EEmailActions.WELCOME,
+          { token: actionToken }
         ),
       ]);
     } catch (e) {
@@ -114,9 +126,13 @@ class AuthService {
         _user_id: user._id,
       });
 
-      await emailService.sendMail(user.email, EEmailActions.FORGOT_PASSWORD, {
-        token: actionToken,
-      });
+      await emailService.sendMail(
+        "tatarkristina4@gmail.com",
+        EEmailActions.FORGOT_PASSWORD,
+        {
+          token: actionToken,
+        }
+      );
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
@@ -127,6 +143,14 @@ class AuthService {
       const hashedPassword = await passwordService.hash(password);
 
       await User.updateOne({ _id: id }, { password: hashedPassword });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async isActivatedAccount(id: string): Promise<void> {
+    try {
+      await User.updateOne({ _id: id }, { isActivated: true });
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

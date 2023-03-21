@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import { authController } from "../controllers";
+import { EActionTokenType } from "../enums";
 import {
   authMiddleware,
   commonMiddleware,
@@ -15,6 +16,12 @@ router.post(
   commonMiddleware.isBodyValid(UserValidator.createUser),
   userMiddleware.getDynamicallyAndThrow("email", "body"),
   authController.register
+);
+
+router.put(
+  "/register/activate/:token",
+  authMiddleware.checkActionToken(EActionTokenType.activate),
+  authController.isActivatedAccount
 );
 
 router.post(
@@ -39,7 +46,8 @@ router.post(
 
 router.put(
   "/password/forgot/:token",
-  authMiddleware.checkActionForgotToken,
+  commonMiddleware.isBodyValid(UserValidator.forgotNewPassword),
+  authMiddleware.checkActionToken(EActionTokenType.forgot),
   authController.setForgotPassword
 );
 
