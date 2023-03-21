@@ -47,10 +47,10 @@ class TokenService {
 
     switch (tokenType) {
       case EActionTokenType.activate:
-        secret = configs.FORGOT_SECRET;
+        secret = configs.ACTIVATE_SECRET;
         break;
       case EActionTokenType.forgot:
-        secret = configs.ACTIVATE_SECRET;
+        secret = configs.FORGOT_SECRET;
         break;
     }
     return jwt.sign(payload, secret, { expiresIn: "7d" });

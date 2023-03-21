@@ -114,13 +114,9 @@ class AuthService {
         _user_id: user._id,
       });
 
-      await emailService.sendMail(
-        "tatarkristina4@gmail.com",
-        EEmailActions.FORGOT_PASSWORD,
-        {
-          token: actionToken,
-        }
-      );
+      await emailService.sendMail(user.email, EEmailActions.FORGOT_PASSWORD, {
+        token: actionToken,
+      });
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
