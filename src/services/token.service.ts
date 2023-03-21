@@ -53,7 +53,6 @@ class TokenService {
         secret = configs.ACTIVATE_SECRET;
         break;
     }
-
     return jwt.sign(payload, secret, { expiresIn: "7d" });
   }
 

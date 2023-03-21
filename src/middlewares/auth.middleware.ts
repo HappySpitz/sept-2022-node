@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import {Action, Token} from "../dataBase";
+import { Action, Token } from "../dataBase";
 import { EActionTokenType, ETokenType } from "../enums";
 import { ApiError } from "../errors";
 import { tokenService } from "../services";
@@ -56,7 +56,6 @@ class AuthMiddleware {
       if (!tokenInfo) {
         throw new ApiError("Token not valid!", 401);
       }
-
       req.res.locals = { tokenInfo, jwtPayload };
 
       next();
@@ -88,6 +87,7 @@ class AuthMiddleware {
         throw new ApiError("Token not valid!", 401);
       }
 
+      console.log(tokenInfo, jwtPayload);
       req.res.locals = { tokenInfo, jwtPayload };
 
       next();
