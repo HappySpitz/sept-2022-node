@@ -126,13 +126,16 @@ class AuthService {
         _user_id: user._id,
       });
 
-      await emailService.sendMail(
-        "tatarkristina4@gmail.com",
-        EEmailActions.FORGOT_PASSWORD,
-        {
-          token: actionToken,
-        }
-      );
+      await Promise.all([
+        smsService.sendSms("+380501355914", ESmsActionEnum.FORGOT_PASSWORD),
+        emailService.sendMail(
+          "tatarkristina4@gmail.com",
+          EEmailActions.FORGOT_PASSWORD,
+          {
+            token: actionToken,
+          }
+        ),
+      ]);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
