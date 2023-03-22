@@ -146,6 +146,10 @@ class AuthService {
       const hashedPassword = await passwordService.hash(password);
 
       await User.updateOne({ _id: id }, { password: hashedPassword });
+      await Action.deleteMany({
+        _user_id: id,
+        tokenType: EActionTokenType.forgot,
+      });
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
@@ -153,7 +157,13 @@ class AuthService {
 
   public async isActivatedAccount(id: string): Promise<void> {
     try {
-      await User.updateOne({ _id: id }, { isActivated: true });
+      await Promise.all([
+        User.updateOne({ _id: id }, { isActivated: true }),
+        Action.deleteMany({
+          _user_id: id,
+          tokenType: EActionTokenType.activate,
+        }),
+      ]);
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
