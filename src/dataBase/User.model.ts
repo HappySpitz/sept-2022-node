@@ -23,7 +23,7 @@ const userSchema = new Schema(
       enum: EGenders,
     },
     isActivated: {
-      type: String,
+      type: Boolean,
       default: false,
     },
   },
