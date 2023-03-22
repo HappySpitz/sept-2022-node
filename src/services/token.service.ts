@@ -44,16 +44,19 @@ class TokenService {
     tokenType: EActionTokenType
   ): string {
     let secret = "";
+    let expiresIn = "";
 
     switch (tokenType) {
       case EActionTokenType.activate:
         secret = configs.ACTIVATE_SECRET;
+        expiresIn = configs.ACTIVATE_TOKEN_TIME;
         break;
       case EActionTokenType.forgot:
         secret = configs.FORGOT_SECRET;
+        expiresIn = configs.FORGOT_TOKEN_TIME;
         break;
     }
-    return jwt.sign(payload, secret, { expiresIn: "7d" });
+    return jwt.sign(payload, secret, { expiresIn });
   }
 
   public checkActionToken(token: string, tokenType: EActionTokenType) {

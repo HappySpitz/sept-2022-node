@@ -40,6 +40,7 @@ router.post(
 
 router.post(
   "/password/forgot",
+  commonMiddleware.isBodyValid(UserValidator.forgotPassword_Email),
   userMiddleware.getDynamicallyOrThrow("email"),
   authController.forgotPassword
 );

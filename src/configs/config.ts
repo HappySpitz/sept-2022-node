@@ -12,6 +12,9 @@ export const configs = {
   FORGOT_SECRET: process.env.JWT_FORGOT_SECRET,
   ACTIVATE_SECRET: process.env.JWT_ACTIVATE_SECRET,
 
+  FORGOT_TOKEN_TIME: process.env.FORGOT_TOKEN_TIME || "1d",
+  ACTIVATE_TOKEN_TIME: process.env.ACTIVATE_TOKEN_TIME || "10d",
+
   NO_REPLY_EMAIL: process.env.NO_REPLY_EMAIL,
   NO_REPLY_EMAIL_PASSWORD: process.env.NO_REPLY_EMAIL_PASSWORD,
 
