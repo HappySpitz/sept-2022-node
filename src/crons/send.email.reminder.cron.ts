@@ -17,7 +17,7 @@ const emailSender = async (): Promise<void> => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     users.map(async (user) => {
       await emailService.sendMail(
-        "tatarkristina4@gmail.com",
+        user.email,
         EEmailActions.REMINDER
       );
     })
