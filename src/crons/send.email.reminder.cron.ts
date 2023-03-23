@@ -14,12 +14,8 @@ const emailSender = async (): Promise<void> => {
   const users = await User.find({ updatedAt: { $lte: previousMonth } });
 
   await Promise.all(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     users.map(async (user) => {
-      await emailService.sendMail(
-        user.email,
-        EEmailActions.REMINDER
-      );
+      await emailService.sendMail(user.email, EEmailActions.REMINDER);
     })
   );
 };
