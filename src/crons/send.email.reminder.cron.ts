@@ -9,9 +9,9 @@ import { emailService } from "../services";
 dayjs.extend(utc);
 
 const emailSender = async (): Promise<void> => {
-  const previousMonth = dayjs().utc().subtract(1, "month");
+  const previousWeek = dayjs().utc().subtract(1, "week");
 
-  const users = await User.find({ updatedAt: { $lte: previousMonth } });
+  const users = await User.find({ updatedAt: { $lte: previousWeek } });
 
   await Promise.all(
     users.map(async (user) => {
