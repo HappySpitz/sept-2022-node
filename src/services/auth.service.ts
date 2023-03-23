@@ -1,4 +1,4 @@
-import { Action, Token, User } from "../dataBase";
+import { Action, OldPassword, Token, User } from "../dataBase";
 import { EActionTokenType, EEmailActions, ESmsActionEnum } from "../enums";
 import { ApiError } from "../errors";
 import { ICredentials, ITokenPair, ITokenPayload, IUser } from "../types";
@@ -136,18 +136,23 @@ class AuthService {
           }
         ),
       ]);
+      await OldPassword.create({ _user_id: user._id, password: user.password });
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
   }
 
-  public async setForgotPassword(password: string, id: string): Promise<void> {
+  public async setForgotPassword(
+    password: string,
+    id: string,
+    token: string
+  ): Promise<void> {
     try {
       const hashedPassword = await passwordService.hash(password);
 
       await User.updateOne({ _id: id }, { password: hashedPassword });
-      await Action.deleteMany({
-        _user_id: id,
+      await Action.deleteOne({
+        actionToken: token,
         tokenType: EActionTokenType.forgot,
       });
     } catch (e) {
@@ -155,12 +160,12 @@ class AuthService {
     }
   }
 
-  public async isActivatedAccount(id: string): Promise<void> {
+  public async isActivatedAccount(id: string, token: string): Promise<void> {
     try {
       await Promise.all([
         User.updateOne({ _id: id }, { isActivated: true }),
-        Action.deleteMany({
-          _user_id: id,
+        Action.deleteOne({
+          actionToken: token,
           tokenType: EActionTokenType.activate,
         }),
       ]);

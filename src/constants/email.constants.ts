@@ -12,4 +12,8 @@ export const allTemplates: {
       "We control your password, just follow all steps and everything will be good",
     templateName: "forgotPassword",
   },
+  [EEmailActions.REMINDER]: {
+    subject: "Congratulations! Got 5 minutes? Time for a short English lesson!",
+    templateName: "reminder",
+  },
 };
