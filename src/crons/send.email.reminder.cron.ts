@@ -24,4 +24,4 @@ const emailSender = async (): Promise<void> => {
   );
 };
 
-export const sendEmailReminder = new CronJob("* * * * *", emailSender);
+export const sendEmailReminder = new CronJob("0 0 * * *", emailSender);
