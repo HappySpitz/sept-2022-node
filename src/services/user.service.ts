@@ -1,11 +1,49 @@
 import { User } from "../dataBase";
 import { ApiError } from "../errors";
-import { IUser } from "../types";
+import { IPaginationResponse, IQuery, IUser } from "../types";
 
 class UserService {
   public async getAll(): Promise<IUser[]> {
     try {
       return User.find();
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async getWithPagination(
+    query: IQuery
+  ): Promise<IPaginationResponse<IUser>> {
+    try {
+      const queryStr = JSON.stringify(query);
+      const queryObj = JSON.parse(
+        queryStr.replace(/\b(gte|lte|gt|lt)\b/, (match) => `$${match}`)
+      );
+
+      const {
+        page = 1,
+        limit = 5,
+        sortedBy = "createdAt",
+        ...searchObject
+      } = queryObj;
+
+      const skip = limit * (page - 1);
+
+      const users = await User.find(searchObject)
+        .limit(limit)
+        .skip(skip)
+        .sort(sortedBy)
+        .lean();
+
+      const usersTotalCount = await User.count();
+
+      return {
+        page: +page,
+        itemsCount: usersTotalCount,
+        perPage: +limit,
+        itemsFound: users.length,
+        data: users,
+      };
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
