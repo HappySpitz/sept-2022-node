@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { User } from "../dataBase";
 import { userService } from "../services";
-import { ICommentResponse, IMessage, IUser } from "../types";
+import { ICommentResponse, IMessage, IQuery, IUser } from "../types";
 
 class UserController {
   public async getAll(
@@ -11,7 +11,9 @@ class UserController {
     next: NextFunction
   ): Promise<Response<IUser[]>> {
     try {
-      const users = await userService.getAll();
+      const users = await userService.getWithPagination(
+        req.query as unknown /* я хз що це таке */ as IQuery
+      );
 
       return res.json(users);
     } catch (e) {
