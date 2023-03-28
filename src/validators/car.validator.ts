@@ -1,44 +1,19 @@
 import Joi from "joi";
 
-import { regexConstants } from "../constants";
-import { EGenders } from "../enums";
+export class CarValidator {
+  private static brand = Joi.string().min(2).max(15).trim().lowercase();
+  private static model = Joi.string().min(2).max(15).trim().lowercase();
+  private static year = Joi.number().min(1990).max(new Date().getFullYear());
 
-export class UserValidator {
-  private static firstName = Joi.string().min(2).max(50).trim();
-  private static email = Joi.string()
-    .regex(regexConstants.EMAIL)
-    .lowercase()
-    .trim();
-  private static password = Joi.string().regex(regexConstants.PASSWORD);
-  private static gender = Joi.valid(...Object.values(EGenders));
-
-  static createUser = Joi.object({
-    name: this.firstName.required(),
-    email: this.email.required(),
-    password: this.password.required(),
-    gender: this.gender.required(),
+  static create = Joi.object({
+    brand: this.brand.required(),
+    model: this.model.required(),
+    year: this.year.required(),
   });
 
-  static updateUser = Joi.object({
-    name: this.firstName,
-    gender: this.gender,
-  });
-
-  static loginUser = Joi.object({
-    email: this.email.required(),
-    password: this.password.required(),
-  });
-
-  static changeUserPassword = Joi.object({
-    oldPassword: this.password.required(),
-    newPassword: this.password.required(),
-  });
-
-  static forgotNewPassword = Joi.object({
-    password: this.password.required(),
-  });
-
-  static forgotPassword_Email = Joi.object({
-    email: this.email.required(),
+  static update = Joi.object({
+    brand: this.brand,
+    model: this.model,
+    year: this.year,
   });
 }

@@ -11,10 +11,12 @@ export class UserValidator {
     .trim();
   private static password = Joi.string().regex(regexConstants.PASSWORD);
   private static gender = Joi.valid(...Object.values(EGenders));
+  private static age = Joi.number().min(0).max(120);
 
   static createUser = Joi.object({
     name: this.firstName.required(),
     email: this.email.required(),
+    age: this.age.required(),
     password: this.password.required(),
     gender: this.gender.required(),
   });

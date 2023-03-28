@@ -1,4 +1,6 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
+
+import { User } from "./User.model";
 
 const carSchema = new Schema(
   {
@@ -17,6 +19,11 @@ const carSchema = new Schema(
     year: {
       type: Number,
       required: true,
+    },
+    user: {
+      type: Types.ObjectId,
+      required: true,
+      ref: User,
     },
   },
   {
