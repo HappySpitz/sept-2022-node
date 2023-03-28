@@ -3,14 +3,6 @@ import { ApiError } from "../errors";
 import { IPaginationResponse, IQuery, IUser } from "../types";
 
 class UserService {
-  public async getAll(): Promise<IUser[]> {
-    try {
-      return User.find();
-    } catch (e) {
-      throw new ApiError(e.message, e.status);
-    }
-  }
-
   public async getWithPagination(
     query: IQuery
   ): Promise<IPaginationResponse<IUser>> {
@@ -51,7 +43,23 @@ class UserService {
 
   public async getById(id: string): Promise<IUser> {
     try {
-      return User.findById(id);
+      return User.findById(id).lean();
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async update(userId: string, data: Partial<IUser>): Promise<void> {
+    try {
+      return User.findByIdAndUpdate(userId, data, { new: true });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async delete(userId: string): Promise<void> {
+    try {
+      await User.deleteOne({ _id: userId });
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }
