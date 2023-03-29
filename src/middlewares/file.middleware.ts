@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
+import { UploadedFile } from "express-fileupload";
 
 import { avatarConfig } from "../configs";
 import { ApiError } from "../errors";
-import {UploadedFile} from "express-fileupload";
 
 class FileMiddleware {
   public isAvatarValid(req: Request, res: Response, next: NextFunction) {
