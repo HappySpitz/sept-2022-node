@@ -7,6 +7,7 @@ export interface IUser {
   password: string;
   age: number;
   gender: string;
+  avatar?: string;
   isActivated: boolean;
 }
 

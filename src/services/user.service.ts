@@ -1,6 +1,9 @@
+import { UploadedFile } from "express-fileupload";
+
 import { User } from "../dataBase";
 import { ApiError } from "../errors";
 import { IPaginationResponse, IQuery, IUser } from "../types";
+import { s3Service } from "./s3.service";
 
 class UserService {
   public async getWithPagination(
@@ -60,6 +63,23 @@ class UserService {
   public async delete(userId: string): Promise<void> {
     try {
       await User.deleteOne({ _id: userId });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
+
+  public async uploadAvatar(
+    file: UploadedFile,
+    userId: string
+  ): Promise<IUser> {
+    try {
+      const filePath = await s3Service.uploadPhoto(file, "user", userId);
+
+      return await User.findByIdAndUpdate(
+        userId,
+        { avatar: filePath },
+        { new: true }
+      );
     } catch (e) {
       throw new ApiError(e.message, e.status);
     }

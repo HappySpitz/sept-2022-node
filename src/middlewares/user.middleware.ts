@@ -19,9 +19,9 @@ class UserMiddleware {
         throw new ApiError("User not found!", 422);
       }
 
-      if (!user.isActivated) {
-        throw new ApiError("User not activated!", 403);
-      }
+      // if (!user.isActivated) {
+      //   throw new ApiError("User not activated!", 403);
+      // }
 
       res.locals = { user };
 

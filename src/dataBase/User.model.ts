@@ -27,6 +27,10 @@ const userSchema = new Schema(
       type: String,
       enum: EGenders,
     },
+    avatar: {
+      type: String,
+      required: false,
+    },
     isActivated: {
       type: Boolean,
       default: false,
