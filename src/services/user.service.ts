@@ -84,6 +84,14 @@ class UserService {
       throw new ApiError(e.message, e.status);
     }
   }
+
+  public async deleteAvatar(userId: string): Promise<void> {
+    try {
+      await User.findByIdAndUpdate({ _id: userId }, { avatar: null });
+    } catch (e) {
+      throw new ApiError(e.message, e.status);
+    }
+  }
 }
 
 export const userService = new UserService();
