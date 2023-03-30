@@ -23,7 +23,7 @@ class UserMiddleware {
       //   throw new ApiError("User not activated!", 403);
       // }
 
-      res.locals = { user };
+      res.locals.user = user;
 
       next();
     } catch (e) {

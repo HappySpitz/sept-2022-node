@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { UploadedFile } from "express-fileupload";
 
+import { userMapper } from "../mappers";
 import { userService } from "../services";
-import { ICommentResponse, IMessage, IQuery, IUser } from "../types";
+import { IMessage, IQuery, IUser } from "../types";
 
 class UserController {
   public async getAll(
@@ -11,11 +12,11 @@ class UserController {
     next: NextFunction
   ): Promise<Response<IUser[]>> {
     try {
-      const users = await userService.getWithPagination(
+      const response = await userService.getWithPagination(
         req.query as unknown /* я хз що це таке */ as IQuery
       );
 
-      return res.json(users);
+      return res.json(response);
     } catch (e) {
       next(e);
     }
@@ -27,10 +28,11 @@ class UserController {
     next: NextFunction
   ): Promise<Response<IUser>> {
     try {
-      const { userId } = req.params;
-      const user = await userService.getById(userId);
+      const { user } = res.locals;
 
-      return res.json(user);
+      const response = await userMapper.toResponse(user);
+
+      return res.json(response);
     } catch (e) {
       next(e);
     }
@@ -40,13 +42,15 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response<ICommentResponse<IUser>>> {
+  ): Promise<Response<IUser>> {
     try {
       const { params, body } = req;
 
-      const updateUser = await userService.update(params.userId, body);
+      const updatedUser = await userService.update(params.userId, body);
 
-      return res.status(201).json(updateUser);
+      const response = userMapper.toResponse(updatedUser);
+
+      return res.status(201).json(response);
     } catch (e) {
       next(e);
     }
@@ -72,14 +76,16 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response<void>> {
+  ): Promise<Response<IUser>> {
     try {
-      const { userId } = req.params;
+      const userEntity = res.locals.user as IUser;
       const avatar = req.files.avatar as UploadedFile;
 
-      const user = await userService.uploadAvatar(avatar, userId);
+      const user = await userService.uploadAvatar(avatar, userEntity);
 
-      return res.status(201).json(user);
+      const response = userMapper.toResponse(user);
+
+      return res.status(201).json(response);
     } catch (e) {
       next(e);
     }
@@ -89,13 +95,15 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<Response<IMessage>> {
+  ): Promise<Response<IUser>> {
     try {
-      const { userId } = req.params;
+      const userEntity = res.locals.user as IUser;
 
-      await userService.deleteAvatar(userId);
+      const user = await userService.deleteAvatar(userEntity);
 
-      return res.sendStatus(204);
+      const response = userMapper.toResponse(user);
+
+      return res.status(201).json(response);
     } catch (e) {
       next(e);
     }
